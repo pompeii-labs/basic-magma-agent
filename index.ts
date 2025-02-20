@@ -1,4 +1,5 @@
 import { MagmaAgent } from '@pompeii-labs/magma';
+import { tool, toolparam } from '@pompeii-labs/magma/decorators';
 import { MagmaSystemMessage } from '@pompeii-labs/magma/types';
 
 export default class HelloWorld extends MagmaAgent {
@@ -19,5 +20,14 @@ export default class HelloWorld extends MagmaAgent {
                 `,
             },
         ];
+    }
+
+    @tool({ description: 'Get the weather in a given city' })
+    @toolparam({ key: 'city', description: 'The city to get the weather for', type: 'string', required: true })
+    async getWeather(city: string) {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.OPENWEATHER_API_KEY}`);
+        const data = await response.json();
+
+        return data;
     }
 }
